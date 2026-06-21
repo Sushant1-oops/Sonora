@@ -4,10 +4,10 @@ node_modules/
 # Env files
 .env
 .env.local
-!.env.example
-!.env.docker.example
-!.backend.env.production
-!.frontend.env.production
+.env.example
+.env.docker.example
+backend.env.production
+frontend.env.production
 
 # Build output
 dist/
