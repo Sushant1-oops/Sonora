@@ -54,10 +54,19 @@ export default function PlayerBar() {
   return (
     <div className="bg-elevated border-t border-border flex flex-col">
       {}
-      <div className="lg:hidden h-1 w-full bg-elevated-2 relative">
-        <div
-          className="absolute top-0 left-0 h-full bg-accent transition-[width] duration-200"
-          style={{ width: `${seekPct}%` }}
+      <div className="lg:hidden w-full">
+        <input
+          type="range"
+          min={0}
+          max={duration || 0}
+          step={0.1}
+          value={progress}
+          onChange={handleSeek}
+          className="mobile-seek-slider w-full"
+          style={{
+            background: `linear-gradient(to right, var(--color-accent) 0%, var(--color-accent) ${seekPct}%, var(--color-elevated-2) ${seekPct}%, var(--color-elevated-2) 100%)`,
+          }}
+          aria-label="Seek"
         />
       </div>
 

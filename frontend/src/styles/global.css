@@ -83,3 +83,35 @@ input[type='range'].player-slider:hover::-webkit-slider-thumb {
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
+
+input[type='range'].mobile-seek-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 0;
+  cursor: pointer;
+  background: var(--color-elevated-2);
+  display: block;
+  margin: 0;
+  padding: 0;
+  touch-action: none;
+}
+
+input[type='range'].mobile-seek-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  border: none;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+}
+
+input[type='range'].mobile-seek-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  border: none;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+}
