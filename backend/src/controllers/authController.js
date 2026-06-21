@@ -6,10 +6,12 @@ const ApiError = require('../utils/ApiError');
 const REFRESH_COOKIE_NAME = 'sonora_refresh';
 const REFRESH_COOKIE_MAX_AGE = 7 * 24 * 60 * 60 * 1000; 
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 const refreshCookieOptions = {
   httpOnly: true, 
-  secure: process.env.NODE_ENV === 'production', 
-  sameSite: 'strict', 
+  secure: isProduction, 
+  sameSite: isProduction ? 'none' : 'strict', 
   maxAge: REFRESH_COOKIE_MAX_AGE,
   path: '/api/auth', 
 };
