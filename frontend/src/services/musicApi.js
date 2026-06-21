@@ -6,5 +6,5 @@ export const musicApi = {
   getGenres: () => api.get('/music/genres'),
   getArtistTracks: (artistId, params = {}) =>
     api.get(`/music/artists/${artistId}/tracks`, { params }),
-  getTrack: (spotifyId) => api.get(`/music/tracks/${spotifyId}`),
+  getTrack: (jamendoId) => api.get(`/music/tracks/${jamendoId}`),
 };

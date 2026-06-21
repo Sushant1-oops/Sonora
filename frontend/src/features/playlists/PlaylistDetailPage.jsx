@@ -57,16 +57,16 @@ export default function PlaylistDetailPage() {
 
   return (
     <div className="pt-6 flex flex-col gap-6">
-      <div className="flex items-end gap-6">
-        <div className="w-[180px] h-[180px] rounded-md bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-5xl text-white/70 shadow-2xl flex-shrink-0 overflow-hidden">
+      <div className="flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6 text-center sm:text-left">
+        <div className="w-32 h-32 sm:w-[180px] sm:h-[180px] rounded-md bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-5xl text-white/70 shadow-2xl flex-shrink-0 overflow-hidden">
           {playlist.coverUrl ? <img src={playlist.coverUrl} alt="" className="w-full h-full object-cover" /> : <span>♪</span>}
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 min-w-0 items-center sm:items-start">
           <span className="text-[0.8rem] font-bold uppercase text-text-secondary">Playlist</span>
 
           {editing ? (
-            <div className="flex items-center gap-2.5 max-w-[400px]">
+            <div className="flex items-center gap-2.5 max-w-[400px] w-full">
               <Input
                 value={nameInput}
                 onChange={(e) => setNameInput(e.target.value)}
@@ -76,7 +76,7 @@ export default function PlaylistDetailPage() {
               <Button size="sm" onClick={handleSaveName}>Save</Button>
             </div>
           ) : (
-            <h1 className="text-4xl font-extrabold">{playlist.name}</h1>
+            <h1 className="text-2xl sm:text-4xl font-extrabold break-words">{playlist.name}</h1>
           )}
 
           <p className="text-[0.85rem] text-text-secondary">
@@ -85,7 +85,7 @@ export default function PlaylistDetailPage() {
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center justify-center sm:justify-start gap-4">
         <button
           className="w-14 h-14 rounded-full bg-accent text-[#1a0f0a] flex items-center justify-center hover:scale-105 transition-transform disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
           onClick={handlePlayAll}

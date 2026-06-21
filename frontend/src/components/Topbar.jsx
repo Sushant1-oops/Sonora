@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronDown, LogOut, User as UserIcon } from 'lucide-react';
+import { ChevronDown, LogOut, User as UserIcon, Menu } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import Button from './Button';
 
-export default function Topbar() {
+export default function Topbar({ onMenuClick }) {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -16,7 +16,16 @@ export default function Topbar() {
   }
 
   return (
-    <header className="h-16 flex items-center justify-end px-6 bg-bg/70 backdrop-blur-md sticky top-0 z-10">
+    <header className="h-16 flex items-center gap-3 px-4 lg:px-6 bg-bg/70 backdrop-blur-md sticky top-0 z-10">
+      {}
+      <button
+        className="lg:hidden text-text-secondary hover:text-text-primary flex-shrink-0"
+        onClick={onMenuClick}
+        aria-label="Open menu"
+      >
+        <Menu size={24} />
+      </button>
+
       <div className="flex-1" />
 
       {isAuthenticated ? (

@@ -1,5 +1,4 @@
 import axios from 'axios';
-import toast from 'react-hot-toast';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
@@ -50,11 +49,6 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const { config, response } = error;
-
-    if (!response) {
-      toast.error('No internet connection');
-      return Promise.reject(error);
-    }
 
     if (response?.status !== 401 || config._retried || config.url?.includes('/auth/refresh')) {
       return Promise.reject(error);

@@ -1,21 +1,18 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { libraryApi } from '../../services/libraryApi';
-import toast from 'react-hot-toast';
 
 export const fetchLikedTracks = createAsyncThunk('library/fetchLiked', async () => {
   const { data } = await libraryApi.getLikedTracks();
   return data.data;
 });
 
-export const likeTrack = createAsyncThunk('library/like', async (spotifyId) => {
-  const { data } = await libraryApi.likeTrack(spotifyId);
-  toast.success('Added to Liked Songs');
+export const likeTrack = createAsyncThunk('library/like', async (jamendoId) => {
+  const { data } = await libraryApi.likeTrack(jamendoId);
   return data.data;
 });
 
 export const unlikeTrack = createAsyncThunk('library/unlike', async (trackId) => {
   await libraryApi.unlikeTrack(trackId);
-  toast.success('Removed from Liked Songs');
   return trackId;
 });
 
@@ -24,8 +21,8 @@ export const fetchRecentlyPlayed = createAsyncThunk('library/fetchRecent', async
   return data.data;
 });
 
-export const recordPlay = createAsyncThunk('library/recordPlay', async (spotifyId) => {
-  const { data } = await libraryApi.recordPlay(spotifyId);
+export const recordPlay = createAsyncThunk('library/recordPlay', async (jamendoId) => {
+  const { data } = await libraryApi.recordPlay(jamendoId);
   return data.data;
 });
 
@@ -36,16 +33,14 @@ export const fetchFollowedArtists = createAsyncThunk('library/fetchFollowed', as
 
 export const followArtist = createAsyncThunk(
   'library/follow',
-  async ({ artistName, spotifyArtistId }) => {
-    const { data } = await libraryApi.followArtist(artistName, spotifyArtistId);
-    toast.success(`Following ${artistName}`);
+  async ({ artistName, jamendoArtistId }) => {
+    const { data } = await libraryApi.followArtist(artistName, jamendoArtistId);
     return data.data;
   }
 );
 
 export const unfollowArtist = createAsyncThunk('library/unfollow', async (artistName) => {
   await libraryApi.unfollowArtist(artistName);
-  toast.success(`Unfollowed ${artistName}`);
   return artistName;
 });
 
@@ -92,10 +87,3 @@ export default librarySlice.reducer;
 
 export const selectIsLiked = (state, trackId) =>
   state.library.likedTracks.some((l) => l.trackId === trackId);
-
-export const selectIsTrackLiked = (state, track) => {
-  if (!track) return false;
-  return state.library.likedTracks.some(
-    (l) => (track.id && l.trackId === track.id) || (track.spotifyId && l.track?.spotifyId === track.spotifyId)
-  );
-};

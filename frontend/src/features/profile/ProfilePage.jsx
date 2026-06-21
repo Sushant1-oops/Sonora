@@ -42,16 +42,16 @@ export default function ProfilePage() {
 
   return (
     <div className="pt-6 flex flex-col gap-9">
-      <div className="flex items-end gap-6">
-        <div className="w-40 h-40 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 overflow-hidden text-white shadow-2xl">
+      <div className="flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6 text-center sm:text-left">
+        <div className="w-28 h-28 sm:w-40 sm:h-40 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 overflow-hidden text-white shadow-2xl">
           {profile.avatarUrl ? <img src={profile.avatarUrl} alt="" className="w-full h-full object-cover" /> : <UserIcon size={48} />}
         </div>
 
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-1.5 min-w-0 items-center sm:items-start">
           <span className="text-[0.8rem] font-bold uppercase text-text-secondary">Profile</span>
 
           {editing ? (
-            <div className="flex flex-col gap-3 max-w-[400px] mt-1">
+            <div className="flex flex-col gap-3 max-w-[400px] w-full mt-1">
               <Input
                 label="Display name"
                 value={form.displayName}
@@ -70,7 +70,7 @@ export default function ProfilePage() {
             </div>
           ) : (
             <>
-              <h1 className="text-4xl font-extrabold">{profile.displayName}</h1>
+              <h1 className="text-2xl sm:text-4xl font-extrabold break-words">{profile.displayName}</h1>
               {profile.bio && <p className="text-text-secondary text-[0.9rem] max-w-[480px]">{profile.bio}</p>}
               <p className="text-[0.82rem] text-text-muted">@{profile.username}</p>
             </>

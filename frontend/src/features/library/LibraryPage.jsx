@@ -62,7 +62,7 @@ export default function LibraryPage() {
         <div className="flex flex-col gap-0.5">
           {likedTrackList.length === 0 && <p className="text-text-muted py-5">Songs you like will appear here.</p>}
           {likedTrackList.map((track, i) => (
-            <TrackRow key={track.spotifyId} track={track} index={i} queueContext={likedTrackList} />
+            <TrackRow key={track.id} track={track} index={i} queueContext={likedTrackList} />
           ))}
         </div>
       )}

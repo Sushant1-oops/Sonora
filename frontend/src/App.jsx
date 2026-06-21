@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { Toaster } from 'react-hot-toast';
 
 import { bootstrapSession, sessionExpired } from './features/auth/authSlice';
 
@@ -38,35 +37,22 @@ export default function App() {
   }, [dispatch, navigate]);
 
   return (
-    <>
-      <Toaster
-        position="bottom-right"
-        toastOptions={{
-          style: {
-            background: '#282828',
-            color: '#ffffff',
-            fontSize: '0.88rem',
-            borderRadius: '8px',
-          },
-        }}
-      />
-      <Routes>
-        <Route element={<AuthLayout />}>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-        </Route>
+    <Routes>
+      <Route element={<AuthLayout />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+      </Route>
 
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/playlist/:id" element={<PlaylistDetailPage />} />
-          <Route path="/profile/:username" element={<ProfilePage />} />
+      <Route element={<MainLayout />}>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/search" element={<SearchPage />} />
+        <Route path="/playlist/:id" element={<PlaylistDetailPage />} />
+        <Route path="/profile/:username" element={<ProfilePage />} />
 
-          <Route element={<ProtectedRoute />}>
-            <Route path="/library" element={<LibraryPage />} />
-          </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route path="/library" element={<LibraryPage />} />
         </Route>
-      </Routes>
-    </>
+      </Route>
+    </Routes>
   );
 }

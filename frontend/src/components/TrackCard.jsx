@@ -6,7 +6,7 @@ export default function TrackCard({ track, index, queueContext }) {
   const dispatch = useDispatch();
   const currentTrack = useSelector(selectCurrentTrack);
   const isPlaying = useSelector((state) => state.player.isPlaying);
-  const isCurrent = currentTrack?.spotifyId === track.spotifyId;
+  const isCurrent = currentTrack?.jamendoId === track.jamendoId;
 
   function handleClick() {
     if (isCurrent) {
