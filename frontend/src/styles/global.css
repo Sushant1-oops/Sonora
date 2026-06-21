@@ -1,0 +1,74 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-bg: #0f0b1a;
+  --color-elevated: #1a1429;
+  --color-elevated-2: #241b38;
+  --color-bg-hover: #2c2143;
+
+  --color-accent: #ff6f59;
+  --color-accent-hover: #ff8a76;
+  --color-accent-soft: rgba(255, 111, 89, 0.15);
+
+  --color-secondary: #7c5cff;
+  --color-secondary-soft: rgba(124, 92, 255, 0.15);
+
+  --color-text-primary: #f5f3fa;
+  --color-text-secondary: #a89fc2;
+  --color-text-muted: #6f6688;
+
+  --color-border: #2c2143;
+  --color-success: #4ade80;
+  --color-danger: #f87171;
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-elevated-2);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-bg-hover);
+}
+
+input[type='range'].player-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 999px;
+  cursor: pointer;
+  background: var(--color-elevated-2);
+}
+
+input[type='range'].player-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-text-primary);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+input[type='range'].player-slider:hover::-webkit-slider-thumb {
+  opacity: 1;
+}

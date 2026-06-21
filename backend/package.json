@@ -1,0 +1,40 @@
+{
+  "name": "sonora-backend",
+  "version": "1.0.0",
+  "description": "Backend API for Sonora - a music streaming web app",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy",
+    "prisma:studio": "prisma studio",
+    "seed": "node prisma/seed.js"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.20.0",
+    "@saavn-labs/sdk": "^0.1.5",
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "express-rate-limit": "^7.4.0",
+    "express-validator": "^7.2.0",
+    "helmet": "^7.1.0",
+    "ioredis": "^5.4.1",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "prisma": "^5.20.0",
+    "rate-limit-redis": "^4.2.0",
+    "uuid": "^10.0.0",
+    "winston": "^3.14.2",
+    "youtube-sr": "^4.3.12"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}

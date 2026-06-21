@@ -1,0 +1,122 @@
+import { useState } from 'react';
+import { Play, Pause, Heart, MoreHorizontal } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { playQueue, playPause, selectCurrentTrack } from '../features/player/playerSlice';
+import { likeTrack, unlikeTrack } from '../features/library/librarySlice';
+import AddToPlaylistModal from './AddToPlaylistModal';
+
+function formatDuration(secs) {
+  if (!secs) return '--:--';
+  const m = Math.floor(secs / 60);
+  const s = Math.floor(secs % 60);
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+export default function TrackRow({ track, index, queueContext, onMenuClick }) {
+  const dispatch = useDispatch();
+  const currentTrack = useSelector(selectCurrentTrack);
+  const isPlaying = useSelector((state) => state.player.isPlaying);
+  const isAuthenticated = useSelector((state) => !!state.auth.user);
+  
+  const likedTrackItem = useSelector((state) =>
+    state.library.likedTracks.find(
+      (l) => (track.id && l.trackId === track.id) || (track.spotifyId && l.track?.spotifyId === track.spotifyId)
+    )
+  );
+  const isLiked = !!likedTrackItem;
+  const [showPlaylistModal, setShowPlaylistModal] = useState(false);
+
+  const isCurrent = currentTrack?.spotifyId === track.spotifyId;
+
+  function handlePlayClick() {
+    if (isCurrent) {
+      dispatch(playPause());
+    } else {
+      dispatch(playQueue({ tracks: queueContext || [track], startIndex: index ?? 0 }));
+    }
+  }
+
+  function handleLikeClick(e) {
+    e.stopPropagation();
+    if (!isAuthenticated) return;
+    if (isLiked) {
+      dispatch(unlikeTrack(likedTrackItem.trackId));
+    } else {
+      dispatch(likeTrack(track.spotifyId));
+    }
+  }
+
+  function handleMenuClick(e) {
+    e.stopPropagation();
+    if (onMenuClick) {
+      
+      onMenuClick(track);
+    } else if (isAuthenticated) {
+      
+      setShowPlaylistModal(true);
+    }
+  }
+
+  return (
+    <>
+      <div
+        className={`
+          group grid grid-cols-[32px_44px_1fr_32px_50px_32px] items-center gap-3.5
+          px-3 py-2 rounded-md transition-colors duration-100
+          ${isCurrent ? 'bg-secondary-soft' : 'hover:bg-elevated'}
+        `}
+        onDoubleClick={handlePlayClick}
+      >
+        <button
+          className={`
+            flex items-center justify-center w-8 h-8 rounded-full text-text-primary
+            ${isCurrent ? 'bg-accent text-[#1a0f0a]' : 'bg-transparent group-hover:bg-accent group-hover:text-[#1a0f0a]'}
+          `}
+          onClick={handlePlayClick}
+          aria-label={isCurrent && isPlaying ? 'Pause' : 'Play'}
+        >
+          {isCurrent && isPlaying ? <Pause size={16} /> : <Play size={16} />}
+        </button>
+
+        <img
+          src={track.artworkUrl || '/placeholder-cover.svg'}
+          alt={track.title}
+          className="w-11 h-11 rounded-sm object-cover bg-elevated-2"
+          loading="lazy"
+        />
+
+        <div className="flex flex-col gap-0.5 min-w-0">
+          <span className={`truncate text-[0.9rem] font-medium ${isCurrent ? 'text-accent' : ''}`}>
+            {track.title}
+          </span>
+          <span className="truncate text-[0.8rem] text-text-secondary">{track.artistName}</span>
+        </div>
+
+        {isAuthenticated && (
+          <button
+            className={`flex items-center justify-center ${isLiked ? 'text-accent' : 'text-text-muted hover:text-text-primary'}`}
+            onClick={handleLikeClick}
+          >
+            <Heart size={16} fill={isLiked ? 'currentColor' : 'none'} />
+          </button>
+        )}
+
+        <span className="text-[0.82rem] text-text-secondary text-right">{formatDuration(track.durationSecs)}</span>
+
+        <button
+          className="flex items-center justify-center text-text-muted opacity-0 group-hover:opacity-100 hover:text-text-primary transition-opacity"
+          onClick={handleMenuClick}
+        >
+          <MoreHorizontal size={18} />
+        </button>
+      </div>
+
+      {showPlaylistModal && (
+        <AddToPlaylistModal
+          track={track}
+          onClose={() => setShowPlaylistModal(false)}
+        />
+      )}
+    </>
+  );
+}

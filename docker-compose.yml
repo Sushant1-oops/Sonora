@@ -1,0 +1,132 @@
+version: '3.9'
+
+services:
+  # ── Data layer ──────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: sonora_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sonora
+      POSTGRES_PASSWORD: sonora_password
+      POSTGRES_DB: sonora_db
+    ports:
+      - '5433:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U sonora -d sonora_db']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sonora_net
+
+  redis:
+    image: redis:7-alpine
+    container_name: sonora_redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sonora_net
+
+  # ── Backend API — 3 replicas behind Nginx's load balancer ───────
+  # Each instance is identical (stateless: no in-memory sessions),
+  # which is exactly what makes horizontal scaling possible. They
+  # only differ by INSTANCE_ID, so you can see in the logs / health
+  # endpoint which replica served a given request.
+  backend1:
+    build: ./backend
+    container_name: sonora_backend1
+    restart: unless-stopped
+    env_file: ./backend/.env
+    environment:
+      INSTANCE_ID: backend1
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - sonora_net
+
+  backend2:
+    build: ./backend
+    container_name: sonora_backend2
+    restart: unless-stopped
+    env_file: ./backend/.env
+    environment:
+      INSTANCE_ID: backend2
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - sonora_net
+
+  backend3:
+    build: ./backend
+    container_name: sonora_backend3
+    restart: unless-stopped
+    env_file: ./backend/.env
+    environment:
+      INSTANCE_ID: backend3
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - sonora_net
+
+  # ── Frontend (static build, served by its own small Nginx) ──────
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: /api
+    container_name: sonora_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend1
+      - backend2
+      - backend3
+    networks:
+      - sonora_net
+
+  # ── Gateway: reverse proxy + load balancer ───────────────────────
+  # This is the ONLY service exposed to the outside world. Everything
+  # else (Postgres, Redis, the 3 backend replicas, the frontend
+  # container) is only reachable on the internal Docker network.
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: sonora_nginx
+    restart: unless-stopped
+    ports:
+      - '80:80'
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend1
+      - backend2
+      - backend3
+      - frontend
+    networks:
+      - sonora_net
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  sonora_net:
+    driver: bridge

@@ -1,0 +1,163 @@
+// Sonora — Prisma schema
+// Run `npx prisma migrate dev --name init` after setting DATABASE_URL in .env
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ──────────────────────────────────────────────
+// USERS
+// ──────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  username     String   @unique
+  passwordHash String   @map("password_hash")
+  displayName  String   @map("display_name")
+  avatarUrl    String?  @map("avatar_url")
+  bio          String?
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  playlists      Playlist[]
+  likedTracks    LikedTrack[]
+  followedArtists FollowedArtist[]
+  recentlyPlayed RecentlyPlayed[]
+  refreshTokens  RefreshToken[]
+
+  @@map("users")
+}
+
+// Refresh tokens tracked in Postgres for audit/history;
+// the *active/valid* lookup happens through Redis for speed.
+// Postgres copy lets us revoke "all sessions" and see login history.
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jti       String   @unique // matches the jti embedded in the JWT + the Redis key
+  tokenHash String   @map("token_hash") // we store a hash, never the raw token
+  userAgent String?  @map("user_agent")
+  ipAddress String?  @map("ip_address")
+  expiresAt DateTime @map("expires_at")
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+// ──────────────────────────────────────────────
+// TRACKS (cached metadata from Jamendo)
+// ──────────────────────────────────────────────
+
+// We don't host audio ourselves — Jamendo streams the actual file.
+// This table is a local cache of metadata so playlists/likes can
+// reference a stable internal ID instead of re-fetching from Jamendo
+// every time, and so we can index/search locally too.
+model Track {
+  id            String   @id @default(uuid())
+  spotifyId     String   @unique @map("spotify_id")
+  title         String
+  artistName    String   @map("artist_name")
+  albumName     String?  @map("album_name")
+  durationSecs  Int      @map("duration_secs")
+  artworkUrl    String?  @map("artwork_url")
+  streamUrl     String?  @map("stream_url")
+  youtubeId     String?  @map("youtube_id")
+  genre         String?
+  releaseDate   DateTime? @map("release_date")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  playlistTracks PlaylistTrack[]
+  likedBy        LikedTrack[]
+  recentPlays    RecentlyPlayed[]
+
+  @@index([artistName])
+  @@index([title])
+  @@map("tracks")
+}
+
+// ──────────────────────────────────────────────
+// PLAYLISTS
+// ──────────────────────────────────────────────
+
+model Playlist {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  coverUrl    String?  @map("cover_url")
+  isPublic    Boolean  @default(false) @map("is_public")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  tracks PlaylistTrack[]
+
+  @@index([userId])
+  @@map("playlists")
+}
+
+// Join table — also stores ordering ("position") so playlists are reorderable.
+model PlaylistTrack {
+  id         String   @id @default(uuid())
+  playlistId String   @map("playlist_id")
+  playlist   Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  trackId    String   @map("track_id")
+  track      Track    @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  position   Int
+  addedAt    DateTime @default(now()) @map("added_at")
+
+  @@unique([playlistId, trackId])
+  @@index([playlistId])
+  @@map("playlist_tracks")
+}
+
+// ──────────────────────────────────────────────
+// LIBRARY: likes, follows, history
+// ──────────────────────────────────────────────
+
+model LikedTrack {
+  id      String   @id @default(uuid())
+  userId  String   @map("user_id")
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trackId String   @map("track_id")
+  track   Track    @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  likedAt DateTime @default(now()) @map("liked_at")
+
+  @@unique([userId, trackId])
+  @@index([userId])
+  @@map("liked_tracks")
+}
+
+model FollowedArtist {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  artistName String   @map("artist_name")
+  spotifyArtistId String? @map("spotify_artist_id")
+  followedAt DateTime @default(now()) @map("followed_at")
+
+  @@unique([userId, artistName])
+  @@index([userId])
+  @@map("followed_artists")
+}
+
+model RecentlyPlayed {
+  id       String   @id @default(uuid())
+  userId   String   @map("user_id")
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trackId  String   @map("track_id")
+  track    Track    @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  playedAt DateTime @default(now()) @map("played_at")
+
+  @@index([userId, playedAt])
+  @@map("recently_played")
+}

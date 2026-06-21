@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Env files
+.env
+.env.local
+!.env.example
+!.env.docker.example
+
+# Build output
+dist/
+build/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Editor/OS
+.DS_Store
+.vscode/
+.idea/
+
+# Docker
+docker-compose.override.yml
