@@ -6,6 +6,8 @@ node_modules/
 .env.local
 !.env.example
 !.env.docker.example
+!.backend.env.production
+!.frontend.env.production
 
 # Build output
 dist/
