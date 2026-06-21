@@ -61,7 +61,7 @@ export default function SearchPage() {
                 <p className="text-text-muted py-4">No songs found for "{debouncedQuery}"</p>
               )}
               {trackResults.map((track, i) => (
-                <TrackRow key={track.jamendoId} track={track} index={i} queueContext={trackResults} />
+                <TrackRow key={track.spotifyId} track={track} index={i} queueContext={trackResults} />
               ))}
             </div>
           )}
@@ -72,7 +72,7 @@ export default function SearchPage() {
                 <p className="text-text-muted py-4">No artists found for "{debouncedQuery}"</p>
               )}
               {artistResults.map((artist) => (
-                <div key={artist.jamendoArtistId} className="text-center">
+                <div key={artist.spotifyArtistId} className="text-center">
                   <img
                     src={artist.imageUrl || '/placeholder-cover.svg'}
                     alt={artist.name}

@@ -17,7 +17,7 @@ export default function TrackRow({ track, index, queueContext, onMenuClick }) {
   const isAuthenticated = useSelector((state) => !!state.auth.user);
   const isLiked = useSelector((state) => track.id && selectIsLiked(state, track.id));
 
-  const isCurrent = currentTrack?.jamendoId === track.jamendoId;
+  const isCurrent = currentTrack?.spotifyId === track.spotifyId;
 
   function handlePlayClick() {
     if (isCurrent) {
@@ -33,7 +33,7 @@ export default function TrackRow({ track, index, queueContext, onMenuClick }) {
     if (isLiked) {
       dispatch(unlikeTrack(track.id));
     } else {
-      dispatch(likeTrack(track.jamendoId));
+      dispatch(likeTrack(track.spotifyId));
     }
   }
 

@@ -46,7 +46,7 @@ export function usePlayer() {
       });
     }
     
-  }, [currentTrack?.id]);
+  }, [currentTrack?.spotifyId]);
 
   
   useEffect(() => {
@@ -85,7 +85,7 @@ export function usePlayer() {
         (audio.currentTime > 10 || audio.currentTime > audio.duration / 2)
       ) {
         hasRecordedPlayRef.current = true;
-        libraryApi.recordPlay(currentTrack.jamendoId).catch(() => {});
+        libraryApi.recordPlay(currentTrack.spotifyId).catch(() => {});
       }
     };
 

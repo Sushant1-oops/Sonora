@@ -43,7 +43,7 @@ export default function PlayerBar() {
   function handleLike() {
     if (!isAuthenticated) return;
     if (isLiked) dispatch(unlikeTrack(currentTrack.id));
-    else dispatch(likeTrack(currentTrack.jamendoId));
+    else dispatch(likeTrack(currentTrack.spotifyId));
   }
 
   const VolumeIcon = isMuted || volume === 0 ? VolumeX : volume < 0.5 ? Volume1 : Volume2;

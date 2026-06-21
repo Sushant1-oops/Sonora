@@ -40,7 +40,7 @@ const playerSlice = createSlice({
       state.originalQueue = tracks;
       state.queue = state.shuffle ? shuffleArray(tracks) : tracks;
       state.currentIndex = state.shuffle
-        ? state.queue.findIndex((t) => t.id === tracks[startIndex]?.id)
+        ? state.queue.findIndex((t) => t.spotifyId === tracks[startIndex]?.spotifyId)
         : startIndex;
       state.isPlaying = true;
       state.progress = 0;
@@ -130,7 +130,7 @@ const playerSlice = createSlice({
 
       
       if (currentTrack) {
-        state.currentIndex = state.queue.findIndex((t) => t.id === currentTrack.id);
+        state.currentIndex = state.queue.findIndex((t) => t.spotifyId === currentTrack.spotifyId);
       }
     },
     cycleRepeatMode(state) {

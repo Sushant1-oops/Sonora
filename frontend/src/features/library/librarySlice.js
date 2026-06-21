@@ -6,8 +6,8 @@ export const fetchLikedTracks = createAsyncThunk('library/fetchLiked', async () 
   return data.data;
 });
 
-export const likeTrack = createAsyncThunk('library/like', async (jamendoId) => {
-  const { data } = await libraryApi.likeTrack(jamendoId);
+export const likeTrack = createAsyncThunk('library/like', async (spotifyId) => {
+  const { data } = await libraryApi.likeTrack(spotifyId);
   return data.data;
 });
 
@@ -21,8 +21,8 @@ export const fetchRecentlyPlayed = createAsyncThunk('library/fetchRecent', async
   return data.data;
 });
 
-export const recordPlay = createAsyncThunk('library/recordPlay', async (jamendoId) => {
-  const { data } = await libraryApi.recordPlay(jamendoId);
+export const recordPlay = createAsyncThunk('library/recordPlay', async (spotifyId) => {
+  const { data } = await libraryApi.recordPlay(spotifyId);
   return data.data;
 });
 
@@ -33,8 +33,8 @@ export const fetchFollowedArtists = createAsyncThunk('library/fetchFollowed', as
 
 export const followArtist = createAsyncThunk(
   'library/follow',
-  async ({ artistName, jamendoArtistId }) => {
-    const { data } = await libraryApi.followArtist(artistName, jamendoArtistId);
+  async ({ artistName, spotifyArtistId }) => {
+    const { data } = await libraryApi.followArtist(artistName, spotifyArtistId);
     return data.data;
   }
 );

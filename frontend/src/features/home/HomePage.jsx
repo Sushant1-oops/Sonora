@@ -50,7 +50,7 @@ export default function HomePage() {
           <h2 className="text-[1.3rem] font-bold mb-4">Recently played</h2>
           <div className="grid grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-[18px]">
             {recentTracks.slice(0, 6).map((track, i) => (
-              <TrackCard key={`${track.jamendoId}-${i}`} track={track} index={i} queueContext={recentTracks} />
+              <TrackCard key={`${track.spotifyId}-${i}`} track={track} index={i} queueContext={recentTracks} />
             ))}
           </div>
         </section>
@@ -62,7 +62,7 @@ export default function HomePage() {
         </h2>
         <div className="grid grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-[18px]">
           {popular.map((track, i) => (
-            <TrackCard key={`${track.jamendoId}-${i}`} track={track} index={i} queueContext={popular} />
+            <TrackCard key={`${track.spotifyId}-${i}`} track={track} index={i} queueContext={popular} />
           ))}
         </div>
         {popular.length === 0 && <p className="text-text-muted">No tracks found. Try a different genre.</p>}

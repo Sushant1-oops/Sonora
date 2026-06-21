@@ -28,8 +28,8 @@ export const deletePlaylist = createAsyncThunk('playlists/delete', async (id) =>
 
 export const addTrackToPlaylist = createAsyncThunk(
   'playlists/addTrack',
-  async ({ playlistId, jamendoId }) => {
-    await playlistApi.addTrack(playlistId, jamendoId);
+  async ({ playlistId, spotifyId }) => {
+    await playlistApi.addTrack(playlistId, spotifyId);
     return playlistId;
   }
 );
