@@ -40,7 +40,7 @@ export default function LibraryPage() {
       </div>
 
       {tab === 'playlists' && (
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-[18px]">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-3 sm:gap-[18px]">
           {playlists.length === 0 && <p className="text-text-muted py-5">You haven't created any playlists yet.</p>}
           {playlists.map((p) => (
             <div
@@ -68,7 +68,7 @@ export default function LibraryPage() {
       )}
 
       {tab === 'artists' && (
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-[18px]">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-3 sm:gap-[18px]">
           {followedArtists.length === 0 && <p className="text-text-muted py-5">Artists you follow will appear here.</p>}
           {followedArtists.map((a) => (
             <div key={a.id} className="bg-elevated rounded-2xl p-4 text-center">

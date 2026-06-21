@@ -18,10 +18,10 @@ export default function TrackCard({ track, index, queueContext }) {
 
   return (
     <div
-      className="group bg-elevated hover:bg-elevated-2 rounded-2xl p-3.5 cursor-pointer transition-colors duration-200"
+      className="group bg-elevated hover:bg-elevated-2 rounded-2xl p-2.5 sm:p-3.5 cursor-pointer transition-colors duration-200"
       onClick={handleClick}
     >
-      <div className="relative w-full aspect-square mb-3">
+      <div className="relative w-full aspect-square mb-2 sm:mb-3">
         <img
           src={track.artworkUrl || '/placeholder-cover.svg'}
           alt={track.title}
@@ -30,7 +30,7 @@ export default function TrackCard({ track, index, queueContext }) {
         />
         <button
           className="
-            absolute bottom-2 right-2 w-11 h-11 rounded-full bg-accent text-[#1a0f0a]
+            absolute bottom-2 right-2 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-accent text-[#1a0f0a]
             flex items-center justify-center shadow-lg
             opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0
             transition-all duration-200
@@ -40,8 +40,8 @@ export default function TrackCard({ track, index, queueContext }) {
           {isCurrent && isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}
         </button>
       </div>
-      <p className="truncate text-[0.9rem] font-semibold mb-1">{track.title}</p>
-      <p className="truncate text-[0.8rem] text-text-secondary">{track.artistName}</p>
+      <p className="truncate text-[0.82rem] sm:text-[0.9rem] font-semibold mb-0.5 sm:mb-1">{track.title}</p>
+      <p className="truncate text-[0.75rem] sm:text-[0.8rem] text-text-secondary">{track.artistName}</p>
     </div>
   );
 }

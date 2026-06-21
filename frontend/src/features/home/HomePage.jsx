@@ -23,9 +23,9 @@ export default function HomePage() {
 
   return (
     <div className="pt-6 flex flex-col gap-8">
-      <section className="flex gap-2.5 flex-wrap">
+      <section className="flex gap-2.5 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-x-visible scrollbar-none">
         <button
-          className={`px-[18px] py-2 rounded-full text-[0.85rem] font-semibold transition-colors ${
+          className={`px-[18px] py-2 rounded-full text-[0.85rem] font-semibold transition-colors whitespace-nowrap flex-shrink-0 ${
             !activeGenre ? 'bg-accent text-[#1a0f0a]' : 'bg-elevated text-text-secondary hover:text-text-primary'
           }`}
           onClick={() => dispatch(setActiveGenre(null))}
@@ -35,7 +35,7 @@ export default function HomePage() {
         {genres.map((g) => (
           <button
             key={g}
-            className={`px-[18px] py-2 rounded-full text-[0.85rem] font-semibold transition-colors ${
+            className={`px-[18px] py-2 rounded-full text-[0.85rem] font-semibold transition-colors whitespace-nowrap flex-shrink-0 ${
               activeGenre === g ? 'bg-accent text-[#1a0f0a]' : 'bg-elevated text-text-secondary hover:text-text-primary'
             }`}
             onClick={() => dispatch(setActiveGenre(g))}
@@ -48,7 +48,7 @@ export default function HomePage() {
       {isAuthenticated && recentTracks.length > 0 && (
         <section>
           <h2 className="text-[1.3rem] font-bold mb-4">Recently played</h2>
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-[18px]">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-3 sm:gap-[18px]">
             {recentTracks.slice(0, 6).map((track, i) => (
               <TrackCard key={`${track.spotifyId}-${i}`} track={track} index={i} queueContext={recentTracks} />
             ))}
@@ -60,7 +60,7 @@ export default function HomePage() {
         <h2 className="text-[1.3rem] font-bold mb-4">
           {activeGenre ? `Popular in ${activeGenre}` : 'Popular right now'}
         </h2>
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-[18px]">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-3 sm:gap-[18px]">
           {popular.map((track, i) => (
             <TrackCard key={`${track.spotifyId}-${i}`} track={track} index={i} queueContext={popular} />
           ))}

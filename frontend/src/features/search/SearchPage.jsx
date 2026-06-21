@@ -67,7 +67,7 @@ export default function SearchPage() {
           )}
 
           {tab === 'artists' && (
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-5">
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-3 sm:gap-5">
               {artistResults.length === 0 && (
                 <p className="text-text-muted py-4">No artists found for "{debouncedQuery}"</p>
               )}
