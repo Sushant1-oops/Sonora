@@ -16,14 +16,13 @@ import ProfilePage from './features/profile/ProfilePage';
 import LoginPage from './features/auth/LoginPage';
 import RegisterPage from './features/auth/RegisterPage';
 
+import { Toaster } from 'react-hot-toast';
+
 export default function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  
-  
-  
-  
+  // Keep token bootstrap logic
   useEffect(() => {
     dispatch(bootstrapSession());
 
@@ -37,7 +36,20 @@ export default function App() {
   }, [dispatch, navigate]);
 
   return (
-    <Routes>
+    <>
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          style: {
+            background: 'var(--color-elevated-2, #282828)',
+            color: 'var(--color-text-primary, #ffffff)',
+            borderRadius: '8px',
+            border: '1px solid var(--color-border, #3f3f3f)',
+            fontSize: '0.85rem',
+          },
+        }}
+      />
+      <Routes>
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
@@ -54,5 +66,6 @@ export default function App() {
         </Route>
       </Route>
     </Routes>
+    </>
   );
 }
