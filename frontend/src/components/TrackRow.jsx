@@ -73,7 +73,7 @@ export default function TrackRow({ track, index, queueContext, onMenuClick }) {
 
       {isAuthenticated && (
         <button
-          className={`hidden sm:flex items-center justify-center flex-shrink-0 ${isLiked ? 'text-accent' : 'text-text-muted hover:text-text-primary'}`}
+          className={`flex items-center justify-center flex-shrink-0 ${isLiked ? 'text-accent' : 'text-text-muted hover:text-text-primary'}`}
           onClick={handleLikeClick}
         >
           <Heart size={16} fill={isLiked ? 'currentColor' : 'none'} />
@@ -84,7 +84,7 @@ export default function TrackRow({ track, index, queueContext, onMenuClick }) {
 
       {onMenuClick && (
         <button
-          className="flex items-center justify-center flex-shrink-0 text-text-muted opacity-0 group-hover:opacity-100 hover:text-text-primary transition-opacity"
+          className="flex items-center justify-center flex-shrink-0 text-text-muted sm:opacity-0 sm:group-hover:opacity-100 hover:text-text-primary transition-opacity"
           onClick={(e) => { e.stopPropagation(); onMenuClick(track); }}
         >
           <MoreHorizontal size={18} />

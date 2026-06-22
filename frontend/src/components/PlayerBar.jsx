@@ -80,7 +80,7 @@ export default function PlayerBar() {
           </div>
           {isAuthenticated && (
             <button
-              className={`hidden sm:flex flex-shrink-0 ${isLiked ? 'text-accent' : 'text-text-muted hover:text-text-primary'}`}
+              className={`flex flex-shrink-0 ${isLiked ? 'text-accent' : 'text-text-muted hover:text-text-primary'}`}
               onClick={handleLike}
             >
               <Heart size={18} fill={isLiked ? 'currentColor' : 'none'} />
