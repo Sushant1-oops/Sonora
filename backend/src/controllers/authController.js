@@ -34,11 +34,11 @@ const login = asyncHandler(async (req, res) => {
   const { accessToken, refreshToken, user } = await authService.login({ email, password }, meta);
 
   res.cookie(REFRESH_COOKIE_NAME, refreshToken, refreshCookieOptions);
-  res.json({ success: true, data: { accessToken, user: sanitizeUser(user) } });
+  res.json({ success: true, data: { accessToken, refreshToken, user: sanitizeUser(user) } });
 });
 
 const refresh = asyncHandler(async (req, res) => {
-  const oldToken = req.cookies?.[REFRESH_COOKIE_NAME];
+  const oldToken = req.cookies?.[REFRESH_COOKIE_NAME] || req.body?.refreshToken;
   if (!oldToken) {
     throw ApiError.unauthorized('No refresh token provided');
   }
@@ -46,11 +46,11 @@ const refresh = asyncHandler(async (req, res) => {
   const { accessToken, refreshToken, user } = await authService.refresh(oldToken);
 
   res.cookie(REFRESH_COOKIE_NAME, refreshToken, refreshCookieOptions);
-  res.json({ success: true, data: { accessToken, user: sanitizeUser(user) } });
+  res.json({ success: true, data: { accessToken, refreshToken, user: sanitizeUser(user) } });
 });
 
 const logout = asyncHandler(async (req, res) => {
-  const token = req.cookies?.[REFRESH_COOKIE_NAME];
+  const token = req.cookies?.[REFRESH_COOKIE_NAME] || req.body?.refreshToken;
   await authService.logout(token);
   res.clearCookie(REFRESH_COOKIE_NAME, { path: '/api/auth' });
   res.json({ success: true, message: 'Logged out' });

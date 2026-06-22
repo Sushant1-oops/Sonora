@@ -68,17 +68,22 @@ api.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      const { data } = await api.post('/auth/refresh');
-      setAccessToken(data.data.accessToken);
+      const storedRT = localStorage.getItem('sonora_rt');
+      const { data } = await api.post('/auth/refresh', { refreshToken: storedRT });
+      const newAccessToken = data.data.accessToken;
+      setAccessToken(newAccessToken);
+      if (data.data.refreshToken) {
+        try { localStorage.setItem('sonora_rt', data.data.refreshToken); } catch (_) {}
+      }
       isRefreshing = false;
-      onRefreshed(data.data.accessToken);
+      onRefreshed(newAccessToken);
 
-      config.headers.Authorization = `Bearer ${data.data.accessToken}`;
+      config.headers.Authorization = `Bearer ${newAccessToken}`;
       return api(config);
     } catch (refreshError) {
       isRefreshing = false;
       setAccessToken(null);
-      
+      try { localStorage.removeItem('sonora_rt'); } catch (_) {}
       window.dispatchEvent(new CustomEvent('auth:session-expired'));
       return Promise.reject(refreshError);
     }
