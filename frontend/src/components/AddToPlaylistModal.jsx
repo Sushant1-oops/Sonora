@@ -21,22 +21,28 @@ export default function AddToPlaylistModal({ track, onClose }) {
     e.preventDefault();
     if (!newPlaylistName.trim()) return;
 
+    const name = newPlaylistName;
+    const desc = newPlaylistDesc;
     try {
-      await dispatch(createPlaylist({ name: newPlaylistName, description: newPlaylistDesc })).unwrap();
+      setShowCreateForm(false);
       setNewPlaylistName('');
       setNewPlaylistDesc('');
-      setShowCreateForm(false);
+      const created = await dispatch(createPlaylist({ name, description: desc })).unwrap();
+      toast.success(`Created playlist "${created.name || name}"`);
     } catch (err) {
       toast.error('Failed to create playlist');
     }
   };
 
   const handleAddToPlaylist = async (playlistId) => {
+    const playlist = playlists.find((p) => p.id === playlistId);
+    const playlistName = playlist ? playlist.name : 'playlist';
+    toast.success(`Added "${track.title}" to ${playlistName}`);
+    onClose();
     try {
       await dispatch(addTrackToPlaylist({ playlistId, spotifyId: track.spotifyId })).unwrap();
-      onClose();
     } catch (err) {
-      toast.error('Failed to add track to playlist');
+      toast.error(`Failed to add track to ${playlistName}`);
     }
   };
 

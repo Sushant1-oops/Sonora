@@ -23,11 +23,27 @@ async function likeTrack(userId, spotifyId) {
   }
 }
 
-async function unlikeTrack(userId, trackId) {
+async function unlikeTrack(userId, trackIdOrSpotifyId) {
+  // Check if trackIdOrSpotifyId is a spotifyId (string matching external ID)
+  const track = await prisma.track.findUnique({
+    where: { spotifyId: trackIdOrSpotifyId },
+  });
+
+  const trackId = track ? track.id : trackIdOrSpotifyId;
+
   await prisma.likedTrack
     .delete({ where: { userId_trackId: { userId, trackId } } })
-    .catch(() => {
-      throw ApiError.notFound('Liked track not found');
+    .catch(async () => {
+      // Fallback: in case trackIdOrSpotifyId was the trackId itself
+      if (track && track.id !== trackIdOrSpotifyId) {
+        await prisma.likedTrack
+          .delete({ where: { userId_trackId: { userId, trackId: trackIdOrSpotifyId } } })
+          .catch(() => {
+            throw ApiError.notFound('Liked track not found');
+          });
+      } else {
+        throw ApiError.notFound('Liked track not found');
+      }
     });
 }
 

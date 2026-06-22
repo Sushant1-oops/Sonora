@@ -2,15 +2,18 @@ import { useState } from 'react';
 import { Play, Pause, Heart, MoreHorizontal } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { playQueue, playPause, selectCurrentTrack } from '../features/player/playerSlice';
-import { likeTrack, unlikeTrack, selectIsLiked } from '../features/library/librarySlice';
+import { likeTrack, unlikeTrack, selectLikedRecord } from '../features/library/librarySlice';
 import AddToPlaylistModal from './AddToPlaylistModal';
+import toast from 'react-hot-toast';
 
 export default function TrackCard({ track, index, queueContext }) {
   const dispatch = useDispatch();
   const currentTrack = useSelector(selectCurrentTrack);
   const isPlaying = useSelector((state) => state.player.isPlaying);
   const isAuthenticated = useSelector((state) => !!state.auth.user);
-  const isLiked = useSelector((state) => track.id && selectIsLiked(state, track.id));
+  const likedRecord = useSelector((state) => selectLikedRecord(state, track.id || track.spotifyId));
+  const isLiked = !!likedRecord;
+  const [isAnimating, setIsAnimating] = useState(false);
   const isCurrent = currentTrack?.spotifyId === track.spotifyId;
 
   const [showPlaylistModal, setShowPlaylistModal] = useState(false);
@@ -26,8 +29,17 @@ export default function TrackCard({ track, index, queueContext }) {
   function handleLike(e) {
     e.stopPropagation();
     if (!isAuthenticated) return;
-    if (isLiked) dispatch(unlikeTrack(track.id));
-    else dispatch(likeTrack(track.spotifyId));
+    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(false), 350);
+
+    if (isLiked) {
+      const idToUnlike = likedRecord?.trackId || track.id || track.spotifyId;
+      dispatch(unlikeTrack({ trackId: idToUnlike, spotifyId: track.spotifyId }));
+      toast.success(`Removed "${track.title}" from Liked Songs`, { id: `like-${track.spotifyId}` });
+    } else {
+      dispatch(likeTrack(track));
+      toast.success(`Added "${track.title}" to Liked Songs`, { id: `like-${track.spotifyId}` });
+    }
   }
 
   function handleMenu(e) {
@@ -65,8 +77,9 @@ export default function TrackCard({ track, index, queueContext }) {
             <div className="absolute top-1.5 right-1.5 flex items-center gap-1">
               <button
                 className={`w-7 h-7 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center
-                  sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200
-                  ${isLiked ? 'text-accent' : 'text-white/80 hover:text-white'}`}
+                  sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-200
+                  like-button-animated ${isLiked ? 'like-button-liked' : 'text-white/80 hover:text-white'}
+                  ${isAnimating ? 'animate-heart-pop' : ''}`}
                 onClick={handleLike}
                 aria-label={isLiked ? 'Unlike' : 'Like'}
               >

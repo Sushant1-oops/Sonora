@@ -9,6 +9,7 @@ import { playQueue } from '../../features/player/playerSlice';
 import TrackRow from '../../components/TrackRow';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
+import toast from 'react-hot-toast';
 
 export default function PlaylistDetailPage() {
   const { id } = useParams();
@@ -37,20 +38,33 @@ export default function PlaylistDetailPage() {
 
   async function handleSaveName() {
     if (nameInput.trim()) {
-      await dispatch(updatePlaylist({ id: playlist.id, payload: { name: nameInput.trim() } }));
+      try {
+        const newName = nameInput.trim();
+        await dispatch(updatePlaylist({ id: playlist.id, payload: { name: newName } })).unwrap();
+        toast.success(`Playlist renamed to "${newName}"`);
+      } catch (err) {
+        toast.error('Failed to rename playlist');
+      }
     }
     setEditing(false);
   }
 
   async function handleDelete() {
     if (window.confirm("Delete this playlist? This can't be undone.")) {
-      await dispatch(deletePlaylist(playlist.id));
-      navigate('/library');
+      const playlistName = playlist.name;
+      try {
+        await dispatch(deletePlaylist(playlist.id)).unwrap();
+        toast.success(`Deleted playlist "${playlistName}"`);
+        navigate('/library');
+      } catch (err) {
+        toast.error('Failed to delete playlist');
+      }
     }
   }
 
   function handleRemoveTrack(track) {
     if (window.confirm(`Remove "${track.title}" from this playlist?`)) {
+      toast.success(`Removed "${track.title}" from "${playlist.name}"`);
       dispatch(removeTrackFromPlaylist({ playlistId: playlist.id, trackId: track.id }));
     }
   }

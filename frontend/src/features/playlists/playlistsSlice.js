@@ -80,6 +80,26 @@ const playlistsSlice = createSlice({
       })
       .addCase(deletePlaylist.fulfilled, (state, action) => {
         state.items = state.items.filter((p) => p.id !== action.payload);
+      })
+      .addCase(addTrackToPlaylist.fulfilled, (state, action) => {
+        const playlistId = action.payload;
+        const idx = state.items.findIndex((p) => p.id === playlistId);
+        if (idx !== -1) {
+          if (!state.items[idx]._count) state.items[idx]._count = { tracks: 0 };
+          state.items[idx]._count.tracks += 1;
+        }
+      })
+      .addCase(removeTrackFromPlaylist.pending, (state, action) => {
+        const { playlistId, trackId } = action.meta.arg;
+        if (state.activePlaylist?.id === playlistId && state.activePlaylist.tracks) {
+          state.activePlaylist.tracks = state.activePlaylist.tracks.filter(
+            (pt) => pt.trackId !== trackId && pt.track?.id !== trackId
+          );
+        }
+        const idx = state.items.findIndex((p) => p.id === playlistId);
+        if (idx !== -1 && state.items[idx]._count && state.items[idx]._count.tracks > 0) {
+          state.items[idx]._count.tracks -= 1;
+        }
       });
   },
 });

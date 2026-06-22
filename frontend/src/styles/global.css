@@ -115,3 +115,34 @@ input[type='range'].mobile-seek-slider::-moz-range-thumb {
   border: none;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
 }
+
+/* Like button heart-pop animations and color transitions */
+@keyframes heart-pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.4);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-heart-pop {
+  animation: heart-pop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.like-button-animated {
+  transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1), fill 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.15s ease;
+}
+
+.like-button-animated:active {
+  transform: scale(0.8);
+}
+
+.like-button-liked {
+  color: #ff3b30 !important;
+  fill: #ff3b30 !important;
+}
+

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { Home, Search, Library, Plus, Heart, X } from 'lucide-react';
 import { fetchMyPlaylists, createPlaylist } from '../features/playlists/playlistsSlice';
+import toast from 'react-hot-toast';
 
 const navLinkClass = ({ isActive }) =>
   `flex items-center gap-3.5 px-3 py-2.5 rounded-md text-[0.92rem] font-semibold transition-colors duration-150 ${
@@ -21,8 +22,14 @@ export default function Sidebar({ isOpen, onClose }) {
 
   async function handleCreatePlaylist() {
     setCreating(true);
-    await dispatch(createPlaylist({ name: 'My Playlist', isPublic: false }));
-    setCreating(false);
+    try {
+      const created = await dispatch(createPlaylist({ name: 'My Playlist', isPublic: false })).unwrap();
+      toast.success(`Created playlist "${created.name || 'My Playlist'}"`);
+    } catch (err) {
+      toast.error('Failed to create playlist');
+    } finally {
+      setCreating(false);
+    }
   }
 
   

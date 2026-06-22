@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Play, Pause, SkipBack, SkipForward, Shuffle, Repeat, Repeat1,
@@ -7,8 +8,9 @@ import {
   playPause, next, previous, setVolume, toggleMute,
   toggleShuffle, cycleRepeatMode, selectCurrentTrack,
 } from '../features/player/playerSlice';
-import { likeTrack, unlikeTrack, selectIsLiked } from '../features/library/librarySlice';
+import { likeTrack, unlikeTrack, selectLikedRecord } from '../features/library/librarySlice';
 import { usePlayer } from '../hooks/usePlayer';
+import toast from 'react-hot-toast';
 
 function formatTime(secs) {
   if (!secs || Number.isNaN(secs)) return '0:00';
@@ -26,7 +28,9 @@ export default function PlayerBar() {
     isPlaying, progress, duration, volume, isMuted, shuffle, repeatMode, isLoading,
   } = useSelector((state) => state.player);
   const isAuthenticated = useSelector((state) => !!state.auth.user);
-  const isLiked = useSelector((state) => currentTrack?.id && selectIsLiked(state, currentTrack.id));
+  const likedRecord = useSelector((state) => selectLikedRecord(state, currentTrack?.id || currentTrack?.spotifyId));
+  const isLiked = !!likedRecord;
+  const [isAnimating, setIsAnimating] = useState(false);
 
   if (!currentTrack) {
     return (
@@ -42,8 +46,17 @@ export default function PlayerBar() {
 
   function handleLike() {
     if (!isAuthenticated) return;
-    if (isLiked) dispatch(unlikeTrack(currentTrack.id));
-    else dispatch(likeTrack(currentTrack.spotifyId));
+    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(false), 350);
+
+    if (isLiked) {
+      const idToUnlike = likedRecord?.trackId || currentTrack.id || currentTrack.spotifyId;
+      dispatch(unlikeTrack({ trackId: idToUnlike, spotifyId: currentTrack.spotifyId }));
+      toast.success(`Removed "${currentTrack.title}" from Liked Songs`, { id: `like-${currentTrack.spotifyId}` });
+    } else {
+      dispatch(likeTrack(currentTrack));
+      toast.success(`Added "${currentTrack.title}" to Liked Songs`, { id: `like-${currentTrack.spotifyId}` });
+    }
   }
 
   const VolumeIcon = isMuted || volume === 0 ? VolumeX : volume < 0.5 ? Volume1 : Volume2;
@@ -80,8 +93,11 @@ export default function PlayerBar() {
           </div>
           {isAuthenticated && (
             <button
-              className={`flex flex-shrink-0 ${isLiked ? 'text-accent' : 'text-text-muted hover:text-text-primary'}`}
+              className={`flex flex-shrink-0 like-button-animated ${
+                isLiked ? 'like-button-liked' : 'text-text-muted hover:text-text-primary'
+              } ${isAnimating ? 'animate-heart-pop' : ''}`}
               onClick={handleLike}
+              aria-label={isLiked ? 'Unlike' : 'Like'}
             >
               <Heart size={18} fill={isLiked ? 'currentColor' : 'none'} />
             </button>
